@@ -60,7 +60,7 @@ std.debug.print("The constant is {d}", .{MY_CONST});
 This is not very useful but often people define more complex macros such as the following:
 
 ```C
-// double a number
+// square a number
 // you need the () around x because you might call square(4 + 2)
 #define square(x) ((x) * (x))
 // find the minimum of 2 numbers
@@ -368,11 +368,10 @@ pub fn main() !void {
 
 You can read [Loris Cro](https://kristoff.it)'s blog ["What is Zig's Comptime?"](https://kristoff.it/blog/what-is-zig-comptime/).
 
-You can find the code [here](https://github.com/edyu/wtf-zig-comptime) and the older code that mostly uses `comptime` is [here](https://github.com/beachglasslabs/eraser/tree/405a6809c387eb83de279b2f9f9fb15e5e37ee18).
-
+You can find the code [here](https://github.com/edyu/wtf-zig-comptime).
 
 Special thanks to [InKryption](https://github.com/inkryption) for helping out on **comptime** questions!
 
-The erasure coding project I mentioned earlier is [here](https://github.com/beachglasslabs/eraser).
+The erasure coding project I mentioned earlier is [here](https://github.com/beachglasslabs/eraser), and the older code that mostly uses `comptime` is [here](https://github.com/beachglasslabs/eraser/tree/405a6809c387eb83de279b2f9f9fb15e5e37ee18).
 
 ## ![Zig Logo](https://ziglang.org/zero.svg)
