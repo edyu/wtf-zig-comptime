@@ -1,6 +1,6 @@
 # Zig Comptime -- WTF is Zig Comptime (and Inline)
 
-The power and complexity of **Zig Comptime** and **Zig Inline ** in Zig
+The power and complexity of **Comptime** and **Inline** in Zig
 
 ---
 
@@ -30,9 +30,9 @@ You'd most likely take a mental note that when you declare a type as a function 
 
 [Loris Cro](https://kristoff.it) wrote ["What is Zig's Comptime?"](https://kristoff.it/blog/what-is-zig-comptime/) in 2019 and you are welcome to read through that first.
 
-So what exactly is `comptime`? If we look at it literally, the *comp* part of `comptime` stands for **compile** so `comptime` really means **compile time**. The keyword `comptime` is a label that you can apply to a variable to say that the variable can only be changed during `comptime` so that after the program is compiled and during *runtime* (when running the program), that variable is essentially `const`.
+So, what exactly is `comptime`? If we look at it literally, the *comp* part of `comptime` stands for **compile** so `comptime` really means **compile time**. The keyword `comptime` is a label that you can apply to a variable to say that the variable can only be changed during `comptime` so that after the program is compiled and during *runtime* (when running the program), that variable is essentially `const`.
 
-That was a mouthful so why would you make a variable `comptime`? It would allow you to create macros because macros are **compile time**. And note that one of the reasons that Andrew created **Zig** initially is to remove macros from the **C** so `comptime` is the answer to the **C** macro use case. I know the previous sentences are somewhat contradictory so what I mean really is that `comptime` was invented to allow the use cases of macros by using `comptime` instead.
+That was a mouthful so why would you make a variable `comptime`? It would allow you to create [macros](https://en.wikipedia.org/wiki/Macro_(computer_science)) because macros are **compile time**. And note that one of the reasons that [Andrew](https://github.com/andrewrk) created **Zig** initially is to remove macros from the **C** so `comptime` is the answer to the **C** macro use case. I know the previous sentences are somewhat contradictory so what I mean really is that `comptime` was invented to allow the use cases of macros by using `comptime` instead.
 
 Now the question is what is a macro? One way to think about it is that macros are substitutions that happen during **compile time** as part of a *preprocessor*. A *preprocessor* is a step before the regular compilation (although it happens normally as part of compilation).
 
@@ -43,12 +43,13 @@ In **C**, for example, you often use macros to define a constant such as this:
 #define MY_CONST 5
 ```
 
-And after you define the constant, you can then use such constant any where in your code. The preprocessor would *substitute* everywhere the macro is used with the value that was defined (in this case 5).
+And after you define the constant, you can then use such constant anywhere in your code. The preprocessor would *substitute* everywhere the macro is used with the value that was defined (in this case 5).
 
 ```c
 printf("The constant is %d", MY_CONST);
 ```
-In **Zig**, you can just say
+
+In **Zig**, you can just say:
 
 ```zig
 const MY_CONST = 5;
@@ -137,7 +138,7 @@ When I first started using `comptime`, I realized two problems:
 Let me illustrate the problem 2 here.
 Say I want to pass in numbers during *runtime* by passing in the number on the command-line (same problem from a file, or from user input), you will have a hard time calling the `squareComptime` and `minComptime` versions.
 
-My friend [InKryption] put is succinctly in a quote: "comptime exists in a sort of pure realm where I/O doesn't exist."
+My friend [InKryption] put it succinctly in a quote: "comptime exists in a sort of pure realm where I/O doesn't exist."
 
 If you try to pass in a command-line argument to the function:
 
@@ -232,7 +233,7 @@ pub fn factorial(comptime n: u8) comptime_int {
 }
 ```
 
-When you prefix a `for` loop with the `inline`, you are effectively *unrolling* the loop so that each iteration of the loop are executed sequentially without jumping . This is usually done also for efficiency reasons.
+When you prefix a `for` loop with the `inline`, you are effectively [*unrolling*](https://en.wikipedia.org/wiki/Loop_unrolling) the loop so that each iteration of the loop is executed sequentially without branching. This is usually done also for efficiency reasons.
 
 When you `inline` the loop, the loop can still do *runtime* stuff but the loop branching and the iteration variables are now `comptime`.
 
@@ -250,7 +251,7 @@ pub fn factorial(comptime n: u8) comptime_int {
 
 The real power of `comptime` lies in something called a *type function*. Earlier when I showed the signature of `ArrayList`, it's actually a *type function*. A *type function* is simply a function that returns a type.
 
-Let's see the `ArrayList` type function again:
+Let's see the `ArrayList` *type function* again:
 
 ```zig
 pub fn ArrayList(comptime T: type) type {
@@ -259,7 +260,7 @@ pub fn ArrayList(comptime T: type) type {
 ```
 
 As you can see because the *type function* returns a type, the function name is usually capitalized by convention as if it's a type.
-Effectively you can use *type function* anywhere a type is usually required such as type notation, function arguments, and even return types. However, take note that *type function* name by itself is not a type, because it's a function, you need to actually supply it with the parameters it needs. For example, `ArrayList` is not a type, but `ArrayList(u8)` is a type because the `ArrayList` *type function* requires a type as its parameter specified as `comptime T: type`.
+Effectively you can use *type function* anywhere a type is usually required such as type annotation, function arguments, and even return types. However, take note that *type function* name by itself is not a type, because it's a function, you need to actually supply it with the parameters it needs. For example, `ArrayList` is not a type, but `ArrayList(u8)` is a type because the `ArrayList` *type function* requires a type as its parameter specified as `comptime T: type`.
 
 For example, say I need to implement a function that allows me to calculate the combinatorics of `m choose n`. From your high-school maths, you know that `(m choose n)` is equal to `m! / (n! * (m-n)!)`. In other words, if you have 3 items and you want to get all the combinations of 2 items from those 3 times, you can use such function to calculate how many unique combinations you'd get. So for `(3 choose 2)`, you have `3! / (2! * 1!) = (6 / 2) = 3`.
 
@@ -275,7 +276,7 @@ If you want to get all the actual permutations of such combinatorics, you need t
 
 The reason why we use array instead of an `ArrayList` is to not only be able to find the permutations in `comptime` but also we don't have to deal with allocators. 
 
-In order to make this work, we need to have a type function that would simplify the return type of our function.
+In order to make this work, we need to have a *type function* that would simplify the return type of our function.
 
 ```zig
 pub fn ChosenType(comptime m: u8, comptime n: u8) type {
@@ -330,7 +331,7 @@ In the `choose` function, the return type `ChosenType(m, n)` depends on both of 
 A more complex example is in used my code where although I didn't need to pass in the `comptime z` parameter, I had to because I need that parameter to determine both what matrix to allow multiplying to and the result matrix. In other words, when you multiple an `m x n` (self) matrix with an `n x z` (other) matrix, you know the type must be an `m x z` (return type) matrix. However, because I cannot specify the parameter of the (other) matrix without knowing both values of `n` and `z` from some other parameter except when it's already passed in in the argument, I have to take in an extra `z` parameter.
 
 ```zig
-    pub fn multiply(self: *Self, comptime z: comptime_int, other: BinaryFieldMatrix(n, z, b)) !BinaryFieldMatrix(m, z, b)
+pub fn multiply(self: *Self, comptime z: comptime_int, other: BinaryFieldMatrix(n, z, b)) !BinaryFieldMatrix(m, z, b)
 ```
 
 In this particular function declaration, `BinaryFieldMatrix` is a *type function* as well.
